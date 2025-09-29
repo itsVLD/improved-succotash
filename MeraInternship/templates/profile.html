@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Profile | Internship Portal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    /* Sidebar Styles - Same gradient as other pages */
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      position: fixed;
+      left: 0;
+      top: 0;
+      padding: 20px 0;
+      color: white;
+      z-index: 1000;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    }
+    
+    .brand {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .sidebar nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .sidebar nav li {
+      margin: 5px 0;
+    }
+    
+    .sidebar nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+    }
+    
+    .sidebar nav a:hover {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+    
+    .sidebar nav li.active a {
+      background: rgba(255,255,255,0.15);
+      color: white;
+      border-left-color: white;
+    }
+    
+    /* Main Content Area */
+    .main-content {
+      margin-left: 250px;
+      min-height: 100vh;
+      background: #f8fafc;
+      padding: 30px;
+    }
+    
+    /* Profile Card Styles */
+    .profile-card {
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      background: white;
+      border: 1px solid #e2e8f0;
+      position: relative;
+    }
+    
+    .profile-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #1e3a8a, #3b82f6, #1e3a8a);
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+    
+    .profile-pic {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #3b82f6;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    .skill-tag {
+      display: inline-flex;
+      align-items: center;
+      background: linear-gradient(135deg, #dbeafe, #93c5fd);
+      color: #1e40af;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      margin: 0.25rem;
+      font-weight: 500;
+    }
+    
+    .skill-tag button {
+      background: none;
+      border: none;
+      color: #1e40af;
+      margin-left: 0.5rem;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    
+    .skill-tag button:hover {
+      color: #dc2626;
+    }
+    
+    .autocomplete-items {
+      position: absolute;
+      border: 1px solid #d4d4d4;
+      border-bottom: none;
+      border-top: none;
+      z-index: 99;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border-radius: 0 0 10px 10px;
+      max-height: 200px;
+      overflow-y: auto;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    .autocomplete-items div {
+      padding: 10px;
+      cursor: pointer;
+      border-bottom: 1px solid #d4d4d4;
+    }
+    
+    .autocomplete-items div:hover {
+      background-color: #e9e9e9;
+    }
+    
+    .autocomplete-active {
+      background-color: #3b82f6 !important;
+      color: white;
+    }
+    
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+      display: block;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 0.5rem;
+    }
+    
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+    }
+    
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .form-textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    
+    /* Button Styles */
+    .btn {
+      transition: all 0.3s ease;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 0.75rem 1.5rem;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      color: white;
+      box-shadow: 0 2px 4px rgba(30, 58, 138, 0.2);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(30, 58, 138, 0.3);
+    }
+    
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #374151;
+      border: 1px solid #d1d5db;
+    }
+    
+    .btn-secondary:hover {
+      background: #e5e7eb;
+    }
+    
+    .btn-sm {
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+    }
+    
+    /* Toast Notification */
+    .toast-notification {
+      visibility: hidden;
+      min-width: 250px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      text-align: center;
+      border-radius: 10px;
+      padding: 16px;
+      position: fixed;
+      z-index: 1000;
+      right: 30px;
+      top: 30px;
+      font-weight: 600;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      transition: opacity 0.5s, visibility 0.5s;
+    }
+    
+    .toast-notification.show {
+      visibility: visible;
+      opacity: 1;
+    }
+    
+    /* File Upload Styles */
+    .file-upload {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .file-input {
+      display: none;
+    }
+    
+    .file-label {
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .file-label:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(30, 58, 138, 0.3);
+    }
+    
+    .file-name {
+      color: #6b7280;
+      font-size: 0.9rem;
+    }
+    
+    /* Grid Layout */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+      }
+      
+      .main-content {
+        margin-left: 0;
+      }
+      
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar">
+    <div class="brand">
+      <i class="fa-solid fa-briefcase"></i>
+      Internship Portal
+    </div>
+    <nav>
+      <ul>
+        <li><a href="/dashboard"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+        <li class="active"><a href="/profile"><i class="fa-solid fa-user"></i> Profile</a></li>
+        <li><a href="/assessment"><i class="fa-solid fa-clipboard-list"></i> Assessment Test</a></li>
+        <li><a href="/applications"><i class="fa-solid fa-folder-open"></i> Application Management</a></li>
+        <li><a href="/private_internships"><i class="fa-solid fa-user-lock"></i> Private Internships</a></li>
+        <li><a href="/government_internships"><i class="fa-solid fa-building-columns"></i> Government Internships</a></li>
+        <li><a href="/feedback"><i class="fa-solid fa-star"></i> Feedback</a></li>
+        <li><a href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast-notification">Profile updated successfully!</div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="max-w-6xl mx-auto">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-4xl font-bold mb-2 flex items-center">
+          <i class="fa-solid fa-user text-blue-600 mr-3"></i>
+          Profile
+        </h1>
+        <p class="text-gray-600 text-lg">Manage your profile information and preferences</p>
+      </div>
+
+      <!-- Profile Card -->
+      <div class="profile-card p-8">
+        <!-- Profile Picture and Basic Info -->
+        <div class="flex flex-col md:flex-row items-center md:items-start gap-8 mb-8">
+          <div class="text-center">
+            <img id="profileImg" src="https://via.placeholder.com/150" alt="Profile Picture" class="profile-pic mx-auto mb-4">
+            <input type="file" id="photoUpload" accept="image/*" class="file-input">
+            <label for="photoUpload" class="file-label">
+              <i class="fa-solid fa-camera"></i> Change Photo
+            </label>
+          </div>
+          <div class="flex-1">
+            <h2 id="profileName" class="text-2xl font-bold mb-2">Loading...</h2>
+            <p id="profileTitle" class="text-gray-600 mb-4">Student</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p><strong>Email:</strong> <span id="sidebarEmail">Loading...</span></p>
+                <p><strong>Phone:</strong> <span id="sidebarPhone">Loading...</span></p>
+              </div>
+              <div>
+                <p><strong>Location:</strong> <span id="sidebarLocation">Loading...</span></p>
+                <p><strong>College:</strong> <span id="sidebarUniversity">Loading...</span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Edit Profile Form -->
+        <form id="profileForm" class="space-y-6">
+          <div class="grid-2">
+            <div class="form-group">
+              <label for="firstName" class="form-label">First Name</label>
+              <input type="text" id="firstName" name="firstName" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label for="lastName" class="form-label">Last Name</label>
+              <input type="text" id="lastName" name="lastName" class="form-input" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" name="email" class="form-input" required>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label for="countryCode" class="form-label">Country Code</label>
+              <select id="countryCode" name="countryCode" class="form-select">
+                <option value="+91" data-length="10">India (+91)</option>
+                <option value="+1" data-length="10">USA (+1)</option>
+                <option value="+44" data-length="10">UK (+44)</option>
+                <option value="+61" data-length="9">Australia (+61)</option>
+                <option value="+65" data-length="8">Singapore (+65)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="phone" class="form-label">Phone</label>
+              <input type="tel" id="phone" name="phone" class="form-input">
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label for="country" class="form-label">Country</label>
+              <select id="country" name="country" class="form-select">
+                <option value="">Select Country</option>
+                <option value="India">India</option>
+                <option value="USA">United States</option>
+                <option value="UK">United Kingdom</option>
+                <option value="Australia">Australia</option>
+                <option value="Singapore">Singapore</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="city" class="form-label">City</label>
+              <select id="city" name="city" class="form-select" disabled>
+                <option value="">Select City</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="college" class="form-label">College/University</label>
+            <input type="text" id="college" name="college" class="form-input">
+          </div>
+
+          <div class="form-group">
+            <label for="course" class="form-label">Course</label>
+            <input type="text" id="course" name="course" class="form-input">
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label for="year" class="form-label">Year of Study</label>
+              <select id="year" name="year" class="form-select">
+                <option value="1">1st Year</option>
+                <option value="2">2nd Year</option>
+                <option value="3">3rd Year</option>
+                <option value="4">4th Year</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="specialization" class="form-label">Specialization/Field</label>
+              <select id="specialization" name="specialization" class="form-select">
+                <option value="">Select Specialization</option>
+                <option value="business_analyst">Business Analyst</option>
+                <option value="data_analyst">Data Analyst</option>
+                <option value="data_engineer">Data Engineer</option>
+                <option value="data_scientist">Data Scientist</option>
+                <option value="frontend_developer">Frontend Developer</option>
+                <option value="backend_developer">Backend Developer</option>
+                <option value="full_stack_developer">Full Stack Developer</option>
+                <option value="mobile_developer">Mobile Developer</option>
+                <option value="ui_ux_designer">UI/UX Designer</option>
+                <option value="product_manager">Product Manager</option>
+                <option value="digital_marketing">Digital Marketing</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Skills</label>
+            <div id="skills-container" class="mb-4 flex flex-wrap">
+              <!-- Skills will be dynamically added here -->
+            </div>
+            <div class="relative">
+              <div class="flex gap-2">
+                <input type="text" id="skill-input" placeholder="Type to search skills..." class="form-input flex-1">
+                <button type="button" onclick="addSkill()" class="btn btn-primary btn-sm">
+                  Add
+                </button>
+              </div>
+              <div id="autocomplete-list" class="autocomplete-items"></div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="bio" class="form-label">Bio/Summary</label>
+            <textarea id="bio" name="bio" rows="4" class="form-textarea" placeholder="Tell us about yourself..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Resume</label>
+            <div class="file-upload">
+              <span id="resume-name" class="file-name">No resume uploaded</span>
+              <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" class="file-input">
+              <label for="resume" class="file-label">
+                <i class="fa-solid fa-upload"></i> Upload Resume
+              </label>
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-4 pt-4 border-t border-gray-200">
+            <button type="button" class="btn btn-secondary">Cancel</button>
+            <button type="button" onclick="saveProfile()" class="btn btn-primary">
+              <i class="fa-solid fa-save mr-2"></i> Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Skill sets for different specializations
+    const SKILL_SETS = {
+      business_analyst: {
+        hard: ["Requirements Gathering", "Process Modeling", "Data Analysis", "SQL", "Excel", "Tableau"],
+        domain: ["Business Process", "Stakeholder Management", "Agile Methodology", "User Stories"],
+        soft: ["Communication", "Problem Solving", "Critical Thinking", "Presentation"]
+      },
+      data_analyst: {
+        hard: ["SQL", "Python", "R", "Excel", "Tableau", "Power BI", "Statistics"],
+        domain: ["Data Visualization", "Data Cleaning", "Exploratory Data Analysis"],
+        soft: ["Analytical Thinking", "Attention to Detail", "Communication"]
+      },
+      data_scientist: {
+        hard: ["Python", "R", "Machine Learning", "Deep Learning", "SQL", "Statistics"],
+        domain: ["Natural Language Processing", "Computer Vision", "Predictive Modeling"],
+        soft: ["Problem Solving", "Research Skills", "Mathematical Aptitude"]
+      },
+      frontend_developer: {
+        hard: ["HTML", "CSS", "JavaScript", "React", "Vue", "Angular", "TypeScript"],
+        domain: ["Responsive Design", "Web Performance", "Cross-browser Compatibility"],
+        soft: ["Creativity", "Attention to Detail", "User Experience Focus"]
+      },
+      backend_developer: {
+        hard: ["Node.js", "Python", "Java", "C#", "SQL", "NoSQL", "API Development"],
+        domain: ["System Architecture", "Database Design", "Security"],
+        soft: ["Problem Solving", "Logical Thinking", "System Design"]
+      },
+      full_stack_developer: {
+        hard: ["HTML/CSS", "JavaScript", "React", "Node.js", "SQL", "API Development"],
+        domain: ["Full Stack Architecture", "DevOps", "Cloud Platforms"],
+        soft: ["Versatility", "Problem Solving", "Adaptability"]
+      }
+    };
+
+    // All available skills
+    const allSkills = [
+      "HTML", "CSS", "JavaScript", "React", "Vue", "Angular", "Node.js", "Python",
+      "Java", "C#", "SQL", "NoSQL", "Git", "Docker", "AWS", "Azure", "Machine Learning",
+      "Data Analysis", "Tableau", "Power BI", "Excel", "Agile", "Scrum", "Communication",
+      "Problem Solving", "Teamwork", "Leadership", "Project Management", "UI/UX Design",
+      "Figma", "Adobe XD", "REST APIs", "GraphQL", "DevOps", "CI/CD", "Testing",
+      "Cybersecurity", "Mobile Development", "iOS", "Android", "Flutter", "React Native"
+    ];
+
+    // Initialize the profile page
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load user profile data
+      loadProfileData();
+      
+      // Set up event listeners
+      document.getElementById('specialization').addEventListener('change', updateSkillSuggestions);
+      document.getElementById('photoUpload').addEventListener('change', handlePhotoUpload);
+      document.getElementById('resume').addEventListener('change', handleResumeUpload);
+      document.getElementById('country').addEventListener('change', updateCities);
+      document.getElementById('skill-input').addEventListener('input', handleSkillInput);
+      document.getElementById('skill-input').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          addSkill();
+        }
+      });
+    });
+
+    // Load profile data for the current user
+    function loadProfileData() {
+      // Get current username (in a real app, this would come from session/auth)
+      const username = getCurrentUsername();
+      
+      // Load user data from localStorage (in a real app, this would be from a backend API)
+      const userData = JSON.parse(localStorage.getItem(`user_${username}`)) || getDefaultUserData();
+      
+      // Populate form fields
+      document.getElementById('firstName').value = userData.firstName || '';
+      document.getElementById('lastName').value = userData.lastName || '';
+      document.getElementById('email').value = userData.email || '';
+      document.getElementById('countryCode').value = userData.countryCode || '+91';
+      document.getElementById('phone').value = userData.phone || '';
+      document.getElementById('country').value = userData.country || '';
+      updateCities(); // Update cities based on country
+      setTimeout(() => {
+        document.getElementById('city').value = userData.city || '';
+      }, 100);
+      document.getElementById('college').value = userData.college || '';
+      document.getElementById('course').value = userData.course || '';
+      document.getElementById('year').value = userData.year || '3';
+      document.getElementById('specialization').value = userData.specialization || '';
+      document.getElementById('bio').value = userData.bio || '';
+      
+      // Update profile picture if available
+      if (userData.profilePic) {
+        document.getElementById('profileImg').src = userData.profilePic;
+      }
+      
+      // Update skills
+      if (userData.skills && userData.skills.length > 0) {
+        userData.skills.forEach(skill => {
+          addSkillToContainer(skill);
+        });
+      }
+      
+      // Update resume name if available
+      if (userData.resumeName) {
+        document.getElementById('resume-name').textContent = userData.resumeName;
+      }
+      
+      // Update sidebar information
+      updateSidebarInfo(userData);
+    }
+
+    // Get the current username (mock implementation)
+    function getCurrentUsername() {
+      // In a real application, this would come from the session or authentication system
+      return localStorage.getItem('currentUser') || 'default_user';
+    }
+
+    // Get default user data structure
+    function getDefaultUserData() {
+      return {
+        firstName: '',
+        lastName: '',
+        email: '',
+        countryCode: '+91',
+        phone: '',
+        country: '',
+        city: '',
+        college: '',
+        course: '',
+        year: '3',
+        specialization: '',
+        skills: [],
+        bio: '',
+        profilePic: 'https://via.placeholder.com/150',
+        resumeName: 'No resume uploaded'
+      };
+    }
+
+    // Update sidebar information
+    function updateSidebarInfo(userData) {
+      const fullName = `${userData.firstName || ''} ${userData.lastName || ''}`.trim() || 'User';
+      const location = [userData.city, userData.country].filter(Boolean).join(', ') || 'Not specified';
+      
+      document.getElementById('profileName').textContent = fullName;
+      document.getElementById('sidebarEmail').textContent = userData.email || 'Not specified';
+      document.getElementById('sidebarPhone').textContent = userData.phone ? 
+        `${userData.countryCode || '+91'} ${userData.phone}` : 'Not specified';
+      document.getElementById('sidebarLocation').textContent = location;
+      document.getElementById('sidebarUniversity').textContent = userData.college || 'Not specified';
+      document.getElementById('profileTitle').textContent = userData.course || 'Student';
+    }
+
+    // Update cities based on selected country
+    function updateCities() {
+      const country = document.getElementById('country').value;
+      const citySelect = document.getElementById('city');
+      
+      // Clear previous options
+      citySelect.innerHTML = '<option value="">Select City</option>';
+      
+      // Define cities by country
+      const citiesByCountry = {
+        'India': ['Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai', 'Kolkata', 'Pune'],
+        'USA': ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'Philadelphia'],
+        'UK': ['London', 'Manchester', 'Birmingham', 'Liverpool', 'Leeds', 'Sheffield'],
+        'Australia': ['Sydney', 'Melbourne', 'Brisbane', 'Perth', 'Adelaide', 'Canberra'],
+        'Singapore': ['Singapore']
+      };
+      
+      if (country && citiesByCountry[country]) {
+        citiesByCountry[country].forEach(city => {
+          const option = document.createElement('option');
+          option.value = city;
+          option.textContent = city;
+          citySelect.appendChild(option);
+        });
+        citySelect.disabled = false;
+      } else {
+        citySelect.disabled = true;
+      }
+    }
+
+    // Handle photo upload
+    function handlePhotoUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('profileImg').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // Handle resume upload
+    function handleResumeUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        document.getElementById('resume-name').textContent = file.name;
+      }
+    }
+
+    // Update skill suggestions based on specialization
+    function updateSkillSuggestions() {
+      const specialization = document.getElementById('specialization').value;
+      // This will be handled by the autocomplete in profile.js
+    }
+
+    // Handle skill input for autocomplete
+    function handleSkillInput() {
+      const input = this.value.toLowerCase();
+      const autocompleteList = document.getElementById('autocomplete-list');
+      autocompleteList.innerHTML = '';
+      
+      if (!input) return;
+      
+      // Get skills based on specialization
+      const specialization = document.getElementById('specialization').value;
+      let skills = [];
+      
+      if (specialization && SKILL_SETS[specialization]) {
+        // Get all skills for the selected specialization
+        skills = [
+          ...SKILL_SETS[specialization].hard,
+          ...SKILL_SETS[specialization].domain,
+          ...SKILL_SETS[specialization].soft
+        ];
+      } else {
+        // Get all skills if no specialization is selected
+        skills = allSkills;
+      }
+      
+      // Filter skills based on input
+      const filteredSkills = skills.filter(skill => 
+        skill.toLowerCase().includes(input)
+      ).slice(0, 5);
+      
+      // Create autocomplete items
+      filteredSkills.forEach(skill => {
+        const item = document.createElement('div');
+        item.textContent = skill;
+        item.addEventListener('click', function() {
+          document.getElementById('skill-input').value = skill;
+          autocompleteList.innerHTML = '';
+        });
+        autocompleteList.appendChild(item);
+      });
+    }
+
+    // Add skill to the container
+    function addSkillToContainer(skill) {
+      const skillTag = document.createElement('span');
+      skillTag.className = 'skill-tag';
+      skillTag.innerHTML = `${skill} <button type="button" onclick="removeSkill(this)">×</button>`;
+      document.getElementById('skills-container').appendChild(skillTag);
+    }
+
+    // Add skill from input
+    function addSkill() {
+      const skillInput = document.getElementById('skill-input');
+      const skill = skillInput.value.trim();
+      
+      if (skill) {
+        addSkillToContainer(skill);
+        skillInput.value = '';
+        document.getElementById('autocomplete-list').innerHTML = '';
+      }
+    }
+
+    // Remove skill
+    function removeSkill(button) {
+      button.parentElement.remove();
+    }
+
+    // Save profile data
+    function saveProfile() {
+      const username = getCurrentUsername();
+      const userData = {
+        firstName: document.getElementById('firstName').value,
+        lastName: document.getElementById('lastName').value,
+        email: document.getElementById('email').value,
+        countryCode: document.getElementById('countryCode').value,
+        phone: document.getElementById('phone').value,
+        country: document.getElementById('country').value,
+        city: document.getElementById('city').value,
+        college: document.getElementById('college').value,
+        course: document.getElementById('course').value,
+        year: document.getElementById('year').value,
+        specialization: document.getElementById('specialization').value,
+        bio: document.getElementById('bio').value,
+        profilePic: document.getElementById('profileImg').src,
+        resumeName: document.getElementById('resume-name').textContent,
+        skills: Array.from(document.querySelectorAll('.skill-tag')).map(tag => 
+          tag.textContent.replace('×', '').trim()
+        )
+      };
+      
+      // Save to localStorage (in a real app, this would be sent to a backend API)
+      localStorage.setItem(`user_${username}`, JSON.stringify(userData));
+      
+      // Update sidebar
+      updateSidebarInfo(userData);
+      
+      // Show success message
+      showToast('Profile updated successfully!');
+      
+      // Store user preferences for dashboard recommendations
+      storeUserPreferences(userData);
+    }
+
+    // Store user preferences for dashboard recommendations
+    function storeUserPreferences(userData) {
+      const preferences = {
+        specialization: userData.specialization,
+        skills: userData.skills,
+        location: {
+          country: userData.country,
+          city: userData.city
+        },
+        college: userData.college,
+        course: userData.course
+      };
+      
+      localStorage.setItem(`user_preferences_${getCurrentUsername()}`, JSON.stringify(preferences));
+    }
+
+    // Show toast notification
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

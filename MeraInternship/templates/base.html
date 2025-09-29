@@ -1,0 +1,50 @@
+<!-- Chat Bot Elements -->
+<div class="chat-bubble" id="chatBubble">
+  <i class="fa-solid fa-robot"></i>
+</div>
+
+<div class="overlay" id="chatOverlay"></div>
+
+<div class="chat-sidebar" id="chatSidebar">
+  <div class="chat-header">
+    <h3>Internship Portal Assistant</h3>
+    <button class="close-chat" id="closeChat">
+      <i class="fa-solid fa-times"></i>
+    </button>
+  </div>
+
+  <div class="quick-questions">
+    <h4>Quick Questions</h4>
+    <div class="question-chips">
+      <div class="question-chip" data-question="How do I apply for internships?">How to apply?</div>
+      <div class="question-chip" data-question="What is the assessment test?">About assessments</div>
+      <div class="question-chip" data-question="How to update my profile?">Update profile</div>
+      <div class="question-chip" data-question="What are private internships?">Private internships</div>
+    </div>
+  </div>
+
+  <div class="chat-messages" id="chatMessages">
+    <div class="message bot">
+      <div class="message-content">
+        Hello! I'm your Internship Portal assistant. How can I help you today? You can ask me about applications, assessments, profiles, or anything else related to the portal!
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-input">
+    <div class="input-group">
+      <input type="text" id="chatInput" placeholder="Type your question here..." maxlength="500">
+      <button class="send-button" id="sendMessage">
+        <i class="fa-solid fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Add all the CSS from the base.html example here */
+</style>
+
+<script>
+  // Add all the JavaScript from the base.html example here
+</script>

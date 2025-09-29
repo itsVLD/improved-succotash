@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Private Internships | Internship Portal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    /* Sidebar Styles */
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      position: fixed;
+      left: 0;
+      top: 0;
+      padding: 20px 0;
+      color: white;
+      z-index: 1000;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    }
+    
+    .brand {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .sidebar nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .sidebar nav li {
+      margin: 5px 0;
+    }
+    
+    .sidebar nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+    }
+    
+    .sidebar nav a:hover {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+    
+    .sidebar nav li.active a {
+      background: rgba(255,255,255,0.15);
+      color: white;
+      border-left-color: white;
+    }
+    
+    /* Main Content Area */
+    .main-content {
+      margin-left: 250px;
+      min-height: 100vh;
+      background: #f8fafc;
+      padding: 30px;
+    }
+    
+    /* Internship Card Styles */
+    .internship-card {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      background: white;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .internship-card:hover {
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      transform: translateY(-8px);
+    }
+    
+    .internship-card-content {
+      padding: 1.5rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .company-logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .stipend-badge {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+    
+    .tag {
+      display: inline-block;
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .urgent-tag {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    
+    .featured-tag {
+      background: #fce7f3;
+      color: #be185d;
+    }
+    
+    .filter-btn {
+      transition: all 0.2s ease;
+      border-radius: 10px;
+      padding: 0.5rem 1rem;
+      border: 1px solid #e5e7eb;
+      background: white;
+    }
+    
+    .filter-btn.active {
+      background: #3b82f6;
+      color: white;
+      border-color: #3b82f6;
+    }
+    
+    .search-box {
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      border: 1px solid #d1d5db;
+      transition: all 0.2s ease;
+      width: 100%;
+    }
+    
+    .search-box:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .detail-section {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+    }
+    
+    .back-btn {
+      transition: all 0.2s ease;
+      border-radius: 10px;
+      padding: 0.5rem 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+    }
+    
+    .back-btn:hover {
+      background: #f1f5f9;
+    }
+    
+    .apply-btn {
+      background: linear-gradient(135deg, #10b981, #059669);
+      transition: all 0.3s ease;
+      border-radius: 12px;
+      padding: 0.75rem 2rem;
+      font-weight: 600;
+      box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .apply-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.4);
+    }
+    
+    .skill-tag {
+      display: inline-block;
+      background: #f3f4f6;
+      color: #4b5563;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .stats-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+      }
+      
+      .main-content {
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar">
+    <div class="brand">
+      <i class="fa-solid fa-briefcase"></i>
+      Internship Portal
+    </div>
+    <nav>
+      <ul>
+        <li><a href="/dashboard"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+        <li><a href="/profile"><i class="fa-solid fa-user"></i> Profile</a></li>
+        <li><a href="/assessment"><i class="fa-solid fa-clipboard-list"></i> Assessment Test</a></li>
+        <li><a href="/applications"><i class="fa-solid fa-folder-open"></i> Application Management</a></li>
+        <li class="active"><a href="/private_internships"><i class="fa-solid fa-user-lock"></i> Private Internships</a></li>
+        <li><a href="/government_internships"><i class="fa-solid fa-building-columns"></i> Government Internships</a></li>
+        <li><a href="/feedback"><i class="fa-solid fa-star"></i> Feedback</a></li>
+        <li><a href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="max-w-7xl mx-auto">
+      <!-- Header -->
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+        <div>
+          <h1 class="text-4xl font-bold mb-2 flex items-center">
+            <i class="fa-solid fa-user-lock text-blue-600 mr-3"></i>
+            Private Internships
+          </h1>
+          <p class="text-gray-600 text-lg">Discover 25+ exclusive internship opportunities from top companies</p>
+        </div>
+        <div class="mt-4 md:mt-0 flex items-center gap-4">
+          <div class="stats-card">
+            <div class="bg-blue-100 p-3 rounded-full">
+              <i class="fa-solid fa-briefcase text-blue-600 text-xl"></i>
+            </div>
+            <div>
+              <p class="text-2xl font-bold" id="internship-count">25</p>
+              <p class="text-gray-500 text-sm">Opportunities</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters and Search -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm mb-8">
+        <div class="flex flex-col md:flex-row gap-4">
+          <div class="flex-1">
+            <div class="relative">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400"></i>
+              <input 
+                type="text" 
+                id="search-input" 
+                placeholder="Search by title, company, or skills..." 
+                class="search-box pl-10"
+              >
+            </div>
+          </div>
+          <div class="flex gap-2 overflow-x-auto pb-2 md:pb-0">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="tech">Technology</button>
+            <button class="filter-btn" data-filter="business">Business</button>
+            <button class="filter-btn" data-filter="design">Design</button>
+            <button class="filter-btn" data-filter="marketing">Marketing</button>
+            <button class="filter-btn" data-filter="data">Data Science</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Internship List -->
+      <div id="internship-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Cards will be inserted here -->
+      </div>
+
+      <!-- Internship Details (Hidden by default) -->
+      <div id="internship-detail" class="hidden detail-section p-8 mt-8">
+        <button onclick="backToList()" class="back-btn mb-6">
+          <i class="fa-solid fa-arrow-left"></i> Back to List
+        </button>
+        
+        <div class="flex flex-col lg:flex-row gap-8">
+          <div class="lg:w-2/3">
+            <div class="flex flex-col md:flex-row md:items-start gap-4 mb-6">
+              <div id="detail-logo" class="company-logo text-2xl"></div>
+              <div>
+                <h2 id="detail-title" class="text-3xl font-bold text-gray-900 mb-2"></h2>
+                <p id="detail-company" class="text-xl text-gray-700 mb-3"></p>
+                <div id="detail-tags" class="flex flex-wrap gap-2 mb-4"></div>
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div class="bg-gray-50 p-4 rounded-xl">
+                <p class="text-gray-500 text-sm mb-1">Stipend</p>
+                <p id="detail-stipend" class="text-2xl font-bold text-green-600"></p>
+              </div>
+              <div class="bg-gray-50 p-4 rounded-xl">
+                <p class="text-gray-500 text-sm mb-1">Location</p>
+                <p id="detail-location" class="text-xl font-semibold flex items-center gap-2">
+                  <i class="fa-solid fa-location-dot text-red-500"></i>
+                  <span></span>
+                </p>
+              </div>
+              <div class="bg-gray-50 p-4 rounded-xl">
+                <p class="text-gray-500 text-sm mb-1">Duration</p>
+                <p id="detail-duration" class="text-xl font-semibold flex items-center gap-2">
+                  <i class="fa-solid fa-clock text-purple-500"></i>
+                  <span></span>
+                </p>
+              </div>
+              <div class="bg-gray-50 p-4 rounded-xl">
+                <p class="text-gray-500 text-sm mb-1">Eligibility</p>
+                <p id="detail-eligibility" class="text-xl font-semibold flex items-center gap-2">
+                  <i class="fa-solid fa-graduation-cap text-green-500"></i>
+                  <span></span>
+                </p>
+              </div>
+            </div>
+            
+            <div class="mb-8">
+              <h3 class="text-xl font-semibold mb-4 pb-2 border-b">Description</h3>
+              <p id="detail-description" class="text-gray-700 leading-relaxed"></p>
+            </div>
+            
+            <div class="mb-8">
+              <h3 class="text-xl font-semibold mb-4 pb-2 border-b">Requirements</h3>
+              <div id="detail-requirements" class="flex flex-wrap gap-2"></div>
+            </div>
+            
+            <div class="mb-8">
+              <h3 class="text-xl font-semibold mb-4 pb-2 border-b">Perks & Benefits</h3>
+              <ul id="detail-perks" class="list-disc list-inside text-gray-700 space-y-2"></ul>
+            </div>
+          </div>
+          
+          <div class="lg:w-1/3">
+            <div class="bg-blue-50 p-6 rounded-2xl sticky top-6">
+              <h3 class="text-xl font-semibold mb-4">Ready to Apply?</h3>
+              <p class="text-gray-600 mb-6">Submit your application for this internship opportunity.</p>
+              <button class="apply-btn w-full text-white font-bold py-3 rounded-lg shadow-lg flex items-center justify-center gap-2">
+                <i class="fa-solid fa-paper-plane"></i> Apply Now
+              </button>
+              <div class="mt-6 pt-6 border-t border-blue-100">
+                <h4 class="font-semibold mb-2">Application Tips</h4>
+                <ul class="text-sm text-gray-600 space-y-1">
+                  <li class="flex items-start gap-2">
+                    <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                    <span>Update your profile before applying</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                    <span>Tailor your resume to match requirements</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                    <span>Complete any required assessments</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Extended internship data with 25+ internships
+    const internships = [
+      {
+        id: 1,
+        title: "Frontend Developer Intern",
+        company: "Tech Solutions Inc.",
+        stipend: "₹15,000/month",
+        location: "Remote",
+        duration: "3 months",
+        eligibility: "Computer Science students",
+        description: "Work on cutting-edge frontend development using React, Vue, and modern JavaScript frameworks. You'll collaborate with UX designers and backend developers to create responsive web applications.",
+        requirements: ["HTML5", "CSS3", "JavaScript", "React", "Git"],
+        perks: ["Certificate of completion", "Letter of recommendation", "Flexible working hours", "Mentorship program"],
+        category: "tech",
+        logo: "TS",
+        logoColor: "#3B82F6",
+        tags: ["Remote", "Immediate", "React"]
+      },
+      {
+        id: 2,
+        title: "Data Science Intern",
+        company: "Data Analytics Pro",
+        stipend: "₹20,000/month",
+        location: "Bangalore",
+        duration: "6 months",
+        eligibility: "Statistics/Computer Science students",
+        description: "Analyze large datasets and build predictive models using Python, R, and machine learning algorithms. Work with real-world data to derive actionable insights.",
+        requirements: ["Python", "SQL", "Machine Learning", "Statistics", "Data Visualization"],
+        perks: ["Certificate", "Stipend", "Project ownership", "Networking events"],
+        category: "data",
+        logo: "DA",
+        logoColor: "#10B981",
+        tags: ["Bangalore", "Machine Learning", "Python"]
+      },
+      {
+        id: 3,
+        title: "Digital Marketing Intern",
+        company: "Marketing Masters",
+        stipend: "₹12,000/month",
+        location: "Mumbai",
+        duration: "4 months",
+        eligibility: "Marketing/Business students",
+        description: "Assist in digital marketing campaigns, social media management, and content creation. Learn SEO, SEM, and analytics tools.",
+        requirements: ["Social Media", "Content Writing", "Google Analytics", "SEO"],
+        perks: ["Certificate", "Performance bonus", "Networking", "Portfolio projects"],
+        category: "marketing",
+        logo: "MM",
+        logoColor: "#8B5CF6",
+        tags: ["Mumbai", "SEO", "Content"]
+      },
+      {
+        id: 4,
+        title: "Backend Developer Intern",
+        company: "ServerStack Solutions",
+        stipend: "₹18,000/month",
+        location: "Hyderabad",
+        duration: "6 months",
+        eligibility: "Computer Science students",
+        description: "Develop and maintain server-side logic, databases, and APIs. Work with Node.js, Python, and cloud platforms.",
+        requirements: ["Node.js", "Python", "MongoDB", "REST APIs", "AWS"],
+        perks: ["Certificate", "Stipend", "Cloud credits", "Tech workshops"],
+        category: "tech",
+        logo: "SS",
+        logoColor: "#F59E0B",
+        tags: ["Hyderabad", "Node.js", "Backend"]
+      },
+      {
+        id: 5,
+        title: "UI/UX Design Intern",
+        company: "Design Studio Pro",
+        stipend: "₹14,000/month",
+        location: "Remote",
+        duration: "3 months",
+        eligibility: "Design students",
+        description: "Create user-centered designs for web and mobile applications. Work on wireframes, prototypes, and user testing.",
+        requirements: ["Figma", "Adobe XD", "User Research", "Wireframing", "Prototyping"],
+        perks: ["Certificate", "Design mentorship", "Portfolio review", "Flexible schedule"],
+        category: "design",
+        logo: "DS",
+        logoColor: "#EC4899",
+        tags: ["Remote", "Figma", "UI/UX"]
+      },
+      {
+        id: 6,
+        title: "Mobile App Developer Intern",
+        company: "AppCraft Studios",
+        stipend: "₹16,000/month",
+        location: "Remote",
+        duration: "4 months",
+        eligibility: "Computer Science students",
+        description: "Develop cross-platform mobile applications using React Native or Flutter.",
+        requirements: ["React Native", "Flutter", "JavaScript", "Dart", "REST APIs"],
+        perks: ["Certificate", "App store publishing", "Mentorship", "Flexible hours"],
+        category: "tech",
+        logo: "AC",
+        logoColor: "#06B6D4",
+        tags: ["Remote", "React Native", "Mobile"]
+      },
+      {
+        id: 7,
+        title: "Machine Learning Intern",
+        company: "AI Innovations",
+        stipend: "₹22,000/month",
+        location: "Bangalore",
+        duration: "6 months",
+        eligibility: "Computer Science/Mathematics students",
+        description: "Work on ML models for computer vision, NLP, or predictive analytics.",
+        requirements: ["Python", "TensorFlow", "PyTorch", "ML Algorithms", "Data Preprocessing"],
+        perks: ["Certificate", "Stipend", "Research opportunities", "Conference attendance"],
+        category: "data",
+        logo: "AI",
+        logoColor: "#8B5CF6",
+        tags: ["Bangalore", "AI", "Python"]
+      },
+      {
+        id: 8,
+        title: "Business Development Intern",
+        company: "Growth Partners",
+        stipend: "₹13,000/month",
+        location: "Delhi",
+        duration: "4 months",
+        eligibility: "Business/Management students",
+        description: "Assist in identifying new business opportunities, client outreach, and market research.",
+        requirements: ["Communication", "Market Research", "Sales", "Presentation"],
+        perks: ["Certificate", "Commission", "Networking", "Mentorship"],
+        category: "business",
+        logo: "GP",
+        logoColor: "#EF4444",
+        tags: ["Delhi", "Sales", "Business"]
+      },
+      {
+        id: 9,
+        title: "Content Writing Intern",
+        company: "Content Creators Co.",
+        stipend: "₹10,000/month",
+        location: "Remote",
+        duration: "3 months",
+        eligibility: "English/Journalism students",
+        description: "Create engaging content for blogs, social media, and marketing materials.",
+        requirements: ["Writing", "SEO", "Research", "Grammar"],
+        perks: ["Certificate", "Portfolio", "Flexible schedule", "Byline credits"],
+        category: "marketing",
+        logo: "CC",
+        logoColor: "#84CC16",
+        tags: ["Remote", "Content", "Writing"]
+      },
+      {
+        id: 10,
+        title: "Product Management Intern",
+        company: "Productive Inc.",
+        stipend: "₹17,000/month",
+        location: "Mumbai",
+        duration: "5 months",
+        eligibility: "Business/Engineering students",
+        description: "Assist in product strategy, user research, and feature prioritization.",
+        requirements: ["Analytical Skills", "User Research", "Communication", "Data Analysis"],
+        perks: ["Certificate", "Mentorship", "Networking", "Product portfolio"],
+        category: "business",
+        logo: "PI",
+        logoColor: "#F97316",
+        tags: ["Mumbai", "Product", "Strategy"]
+      },
+      {
+        id: 11,
+        title: "Cybersecurity Intern",
+        company: "SecureTech Solutions",
+        stipend: "₹19,000/month",
+        location: "Bangalore",
+        duration: "6 months",
+        eligibility: "Computer Science students",
+        description: "Learn about network security, vulnerability assessment, and security protocols.",
+        requirements: ["Network Security", "Linux", "Python", "Cybersecurity Fundamentals"],
+        perks: ["Certificate", "Stipend", "Security certifications", "Hands-on training"],
+        category: "tech",
+        logo: "ST",
+        logoColor: "#DC2626",
+        tags: ["Bangalore", "Security", "Networking"]
+      },
+      {
+        id: 12,
+        title: "DevOps Engineer Intern",
+        company: "CloudOps Technologies",
+        stipend: "₹21,000/month",
+        location: "Hyderabad",
+        duration: "6 months",
+        eligibility: "Computer Science students",
+        description: "Work on CI/CD pipelines, cloud infrastructure, and automation tools.",
+        requirements: ["Docker", "Kubernetes", "AWS", "Jenkins", "Linux"],
+        perks: ["Certificate", "Stipend", "Cloud certification", "Real projects"],
+        category: "tech",
+        logo: "CO",
+        logoColor: "#7C3AED",
+        tags: ["Hyderabad", "DevOps", "Cloud"]
+      },
+      {
+        id: 13,
+        title: "Graphic Design Intern",
+        company: "Creative Design Studio",
+        stipend: "₹11,000/month",
+        location: "Chennai",
+        duration: "3 months",
+        eligibility: "Design students",
+        description: "Create visual content for digital and print media including social media graphics, brochures, and branding materials.",
+        requirements: ["Adobe Photoshop", "Illustrator", "InDesign", "Creativity"],
+        perks: ["Certificate", "Portfolio", "Creative freedom", "Design tools access"],
+        category: "design",
+        logo: "CD",
+        logoColor: "#DB2777",
+        tags: ["Chennai", "Graphic Design", "Creative"]
+      },
+      {
+        id: 14,
+        title: "Sales & Marketing Intern",
+        company: "SalesForce India",
+        stipend: "₹12,000/month + Commission",
+        location: "Delhi",
+        duration: "4 months",
+        eligibility: "Business/Marketing students",
+        description: "Learn sales techniques, lead generation, and customer relationship management.",
+        requirements: ["Communication", "Sales", "CRM", "Negotiation"],
+        perks: ["Certificate", "Commission", "Sales training", "Networking"],
+        category: "business",
+        logo: "SF",
+        logoColor: "#00A0DC",
+        tags: ["Delhi", "Sales", "Commission"]
+      },
+      {
+        id: 15,
+        title: "Full Stack Developer Intern",
+        company: "WebTech Innovations",
+        stipend: "₹20,000/month",
+        location: "Remote",
+        duration: "6 months",
+        eligibility: "Computer Science students",
+        description: "Work on both frontend and backend development of web applications using modern technologies.",
+        requirements: ["React", "Node.js", "MongoDB", "JavaScript", "Git"],
+        perks: ["Certificate", "Stipend", "Project ownership", "Code reviews"],
+        category: "tech",
+        logo: "WT",
+        logoColor: "#059669",
+        tags: ["Remote", "Full Stack", "MERN"]
+      },
+      {
+        id: 16,
+        title: "Data Analyst Intern",
+        company: "Analytics Pro",
+        stipend: "₹16,000/month",
+        location: "Pune",
+        duration: "5 months",
+        eligibility: "Statistics/Business Analytics students",
+        description: "Analyze business data, create reports and dashboards, and provide insights to stakeholders.",
+        requirements: ["Excel", "SQL", "Tableau", "Statistics", "Business Acumen"],
+        perks: ["Certificate", "Stipend", "Real business data", "Mentorship"],
+        category: "data",
+        logo: "AP",
+        logoColor: "#0EA5E9",
+        tags: ["Pune", "Analytics", "SQL"]
+      },
+      {
+        id: 17,
+        title: "Social Media Marketing Intern",
+        company: "Social Buzz Agency",
+        stipend: "₹10,000/month",
+        location: "Mumbai",
+        duration: "3 months",
+        eligibility: "Marketing/Communication students",
+        description: "Manage social media accounts, create engaging content, and analyze performance metrics.",
+        requirements: ["Social Media", "Content Creation", "Analytics", "Creativity"],
+        perks: ["Certificate", "Performance bonus", "Content portfolio", "Industry exposure"],
+        category: "marketing",
+        logo: "SB",
+        logoColor: "#E11D48",
+        tags: ["Mumbai", "Social Media", "Content"]
+      },
+      {
+        id: 18,
+        title: "Python Developer Intern",
+        company: "PyTech Solutions",
+        stipend: "₹17,000/month",
+        location: "Bangalore",
+        duration: "5 months",
+        eligibility: "Computer Science students",
+        description: "Develop Python applications, work with frameworks like Django and Flask, and build APIs.",
+        requirements: ["Python", "Django", "Flask", "REST APIs", "Database"],
+        perks: ["Certificate", "Stipend", "Open source contributions", "Code mentorship"],
+        category: "tech",
+        logo: "PT",
+        logoColor: "#3776AB",
+        tags: ["Bangalore", "Python", "Backend"]
+      },
+      {
+        id: 19,
+        title: "HR & Recruitment Intern",
+        company: "TalentFinders Inc.",
+        stipend: "₹11,000/month",
+        location: "Gurgaon",
+        duration: "4 months",
+        eligibility: "HR/Management students",
+        description: "Assist in recruitment processes, candidate screening, and HR operations.",
+        requirements: ["Communication", "MS Office", "Recruitment", "Interpersonal Skills"],
+        perks: ["Certificate", "Stipend", "HR training", "Networking"],
+        category: "business",
+        logo: "TF",
+        logoColor: "#F59E0B",
+        tags: ["Gurgaon", "HR", "Recruitment"]
+      },
+      {
+        id: 20,
+        title: "Game Development Intern",
+        company: "GameCraft Studios",
+        stipend: "₹15,000/month",
+        location: "Remote",
+        duration: "6 months",
+        eligibility: "Computer Science/Design students",
+        description: "Learn game development using Unity or Unreal Engine and work on game projects.",
+        requirements: ["C#", "Unity", "Game Design", "3D Modeling basics"],
+        perks: ["Certificate", "Game portfolio", "Creative freedom", "Industry mentorship"],
+        category: "tech",
+        logo: "GC",
+        logoColor: "#7C3AED",
+        tags: ["Remote", "Game Dev", "Unity"]
+      },
+      {
+        id: 21,
+        title: "SEO Specialist Intern",
+        company: "Digital Growth Agency",
+        stipend: "₹12,000/month",
+        location: "Remote",
+        duration: "4 months",
+        eligibility: "Marketing/IT students",
+        description: "Learn and implement SEO strategies, keyword research, and website optimization.",
+        requirements: ["SEO", "Google Analytics", "Content Writing", "Technical SEO"],
+        perks: ["Certificate", "Performance bonus", "SEO tools access", "Real client projects"],
+        category: "marketing",
+        logo: "DG",
+        logoColor: "#0F766E",
+        tags: ["Remote", "SEO", "Analytics"]
+      },
+      {
+        id: 22,
+        title: "Blockchain Developer Intern",
+        company: "ChainTech Labs",
+        stipend: "₹25,000/month",
+        location: "Bangalore",
+        duration: "6 months",
+        eligibility: "Computer Science students",
+        description: "Work on blockchain projects, smart contracts, and decentralized applications.",
+        requirements: ["Solidity", "Web3.js", "Blockchain", "Cryptography basics"],
+        perks: ["Certificate", "Stipend", "Crypto exposure", "Cutting-edge technology"],
+        category: "tech",
+        logo: "CT",
+        logoColor: "#F59E0B",
+        tags: ["Bangalore", "Blockchain", "Web3"]
+      },
+      {
+        id: 23,
+        title: "Video Editing Intern",
+        company: "Media Productions",
+        stipend: "₹13,000/month",
+        location: "Mumbai",
+        duration: "3 months",
+        eligibility: "Media/Film students",
+        description: "Edit videos for social media, corporate content, and marketing campaigns.",
+        requirements: ["Adobe Premiere Pro", "After Effects", "Creative Vision", "Storytelling"],
+        perks: ["Certificate", "Portfolio", "Equipment access", "Industry connections"],
+        category: "design",
+        logo: "MP",
+        logoColor: "#DC2626",
+        tags: ["Mumbai", "Video Editing", "Creative"]
+      },
+      {
+        id: 24,
+        title: "Financial Analyst Intern",
+        company: "FinancePro Advisors",
+        stipend: "₹18,000/month",
+        location: "Mumbai",
+        duration: "5 months",
+        eligibility: "Finance/Economics students",
+        description: "Analyze financial data, prepare reports, and assist in investment research.",
+        requirements: ["Excel", "Financial Modeling", "Analytical Skills", "Accounting"],
+        perks: ["Certificate", "Stipend", "Financial training", "Industry exposure"],
+        category: "business",
+        logo: "FP",
+        logoColor: "#059669",
+        tags: ["Mumbai", "Finance", "Analysis"]
+      },
+      {
+        id: 25,
+        title: "AR/VR Developer Intern",
+        company: "RealityTech Labs",
+        stipend: "₹22,000/month",
+        location: "Hyderabad",
+        duration: "6 months",
+        eligibility: "Computer Science/Design students",
+        description: "Work on augmented and virtual reality projects using Unity and AR/VR frameworks.",
+        requirements: ["Unity", "C#", "3D Modeling", "AR/VR SDKs"],
+        perks: ["Certificate", "Stipend", "Cutting-edge projects", "Tech mentorship"],
+        category: "tech",
+        logo: "RT",
+        logoColor: "#8B5CF6",
+        tags: ["Hyderabad", "AR/VR", "Unity"]
+      }
+    ];
+
+    // DOM elements
+    const listContainer = document.getElementById("internship-list");
+    const detailSection = document.getElementById("internship-detail");
+    const searchInput = document.getElementById("search-input");
+    const filterButtons = document.querySelectorAll(".filter-btn");
+    const internshipCount = document.getElementById("internship-count");
+
+    // Render internships on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      renderInternships();
+      setupEventListeners();
+      updateInternshipCount();
+    });
+
+    function setupEventListeners() {
+      // Search functionality
+      searchInput.addEventListener('input', function() {
+        filterInternships();
+      });
+
+      // Filter buttons
+      filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          filterButtons.forEach(btn => btn.classList.remove('active'));
+          this.classList.add('active');
+          filterInternships();
+        });
+      });
+    }
+
+    function filterInternships() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+      
+      const filtered = internships.filter(internship => {
+        const matchesSearch = 
+          internship.title.toLowerCase().includes(searchTerm) ||
+          internship.company.toLowerCase().includes(searchTerm) ||
+          internship.requirements.some(req => req.toLowerCase().includes(searchTerm));
+        
+        const matchesFilter = activeFilter === 'all' || internship.category === activeFilter;
+        
+        return matchesSearch && matchesFilter;
+      });
+      
+      renderInternships(filtered);
+      updateInternshipCount(filtered.length);
+    }
+
+    function renderInternships(internshipsToRender = internships) {
+      listContainer.innerHTML = internshipsToRender.map(internship => `
+        <div class="internship-card" data-id="${internship.id}">
+          <div class="internship-card-content">
+            <div class="company-logo" style="background-color: ${internship.logoColor}">
+              ${internship.logo}
+            </div>
+            <div class="stipend-badge">${internship.stipend}</div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">${internship.title}</h3>
+            <p class="text-gray-700 mb-3 flex items-center">
+              <i class="fa-solid fa-building mr-2 text-blue-500"></i>
+              ${internship.company}
+            </p>
+            <div class="flex flex-wrap mb-4">
+              ${internship.tags.map(tag => `
+                <span class="tag ${tag === 'Immediate' ? 'urgent-tag' : ''}">${tag}</span>
+              `).join('')}
+            </div>
+            <div class="mt-auto">
+              <button class="view-details-btn w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-medium">
+                View Details
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      
+      // Add event listeners to view details buttons
+      document.querySelectorAll('.view-details-btn').forEach(button => {
+        button.addEventListener('click', function() {
+          const card = this.closest('.internship-card');
+          const id = parseInt(card.dataset.id);
+          showDetails(id);
+        });
+      });
+    }
+
+    function showDetails(id) {
+      const internship = internships.find(i => i.id === id);
+      if (!internship) return;
+      
+      listContainer.style.display = "none";
+      detailSection.classList.remove("hidden");
+
+      // Populate details
+      document.getElementById("detail-logo").style.backgroundColor = internship.logoColor;
+      document.getElementById("detail-logo").textContent = internship.logo;
+      document.getElementById("detail-title").textContent = internship.title;
+      document.getElementById("detail-company").textContent = internship.company;
+      document.getElementById("detail-stipend").textContent = internship.stipend;
+      document.getElementById("detail-location").querySelector("span").textContent = internship.location;
+      document.getElementById("detail-duration").querySelector("span").textContent = internship.duration;
+      document.getElementById("detail-eligibility").querySelector("span").textContent = internship.eligibility;
+      document.getElementById("detail-description").textContent = internship.description;
+      
+      // Requirements
+      const requirementsContainer = document.getElementById("detail-requirements");
+      requirementsContainer.innerHTML = internship.requirements.map(req => 
+        `<span class="skill-tag">${req}</span>`
+      ).join('');
+      
+      // Perks
+      const perksContainer = document.getElementById("detail-perks");
+      perksContainer.innerHTML = internship.perks.map(perk => 
+        `<li>${perk}</li>`
+      ).join('');
+      
+      // Tags
+      const tagsContainer = document.getElementById("detail-tags");
+      tagsContainer.innerHTML = internship.tags.map(tag => 
+        `<span class="tag ${tag === 'Immediate' ? 'urgent-tag' : ''}">${tag}</span>`
+      ).join('');
+    }
+
+    function backToList() {
+      detailSection.classList.add("hidden");
+      listContainer.style.display = "grid";
+    }
+
+    function updateInternshipCount(count = internships.length) {
+      internshipCount.textContent = count;
+    }
+  </script>
+</body>
+</html>

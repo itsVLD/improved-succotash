@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Assessment Test | Internship Portal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    /* Sidebar Styles - Same gradient as other pages */
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      position: fixed;
+      left: 0;
+      top: 0;
+      padding: 20px 0;
+      color: white;
+      z-index: 1000;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    }
+    
+    .brand {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .sidebar nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .sidebar nav li {
+      margin: 5px 0;
+    }
+    
+    .sidebar nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+    }
+    
+    .sidebar nav a:hover {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+    
+    .sidebar nav li.active a {
+      background: rgba(255,255,255,0.15);
+      color: white;
+      border-left-color: white;
+    }
+    
+    /* Main Content Area */
+    .main-content {
+      margin-left: 250px;
+      min-height: 100vh;
+      background: #f8fafc;
+      padding: 30px;
+    }
+    
+    /* Test Card Styles with Gradient Theme */
+    .test-card {
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      background: white;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #e2e8f0;
+      position: relative;
+    }
+    
+    .test-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #1e3a8a, #3b82f6, #1e3a8a);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.5s ease;
+    }
+    
+    .test-card:hover::before {
+      transform: scaleX(1);
+    }
+    
+    .test-card:hover {
+      box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.2), 0 10px 10px -5px rgba(59, 130, 246, 0.1);
+      transform: translateY(-8px) scale(1.02);
+    }
+    
+    .test-card-content {
+      padding: 1.5rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .difficulty-badge {
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      display: inline-block;
+      align-self: flex-start;
+    }
+    
+    .difficulty-beginner { 
+      background: linear-gradient(135deg, #bbf7d0, #4ade80);
+      color: #166534;
+    }
+    .difficulty-intermediate { 
+      background: linear-gradient(135deg, #fef3c7, #fcd34d);
+      color: #d97706;
+    }
+    .difficulty-advanced { 
+      background: linear-gradient(135deg, #fecaca, #fca5a5);
+      color: #b91c1c;
+    }
+    
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+      max-height: 650px;
+      overflow-y: auto;
+      padding-right: 5px;
+      scroll-behavior: smooth;
+    }
+    
+    /* Scrollbar style */
+    .test-grid::-webkit-scrollbar {
+      width: 8px;
+    }
+    .test-grid::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      border-radius: 8px;
+    }
+    .test-grid::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 8px;
+    }
+    
+    .test-buttons {
+      margin-top: auto;
+      display: flex;
+      gap: 0.75rem;
+    }
+    
+    .btn {
+      transition: all 0.3s ease;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      border: none;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    .btn.start {
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      color: white;
+      box-shadow: 0 2px 4px rgba(30, 58, 138, 0.2);
+    }
+    
+    .btn.start:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(30, 58, 138, 0.3);
+    }
+    
+    .btn.retake {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+      box-shadow: 0 2px 4px rgba(245, 158, 11, 0.2);
+    }
+    
+    .btn.retake:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(245, 158, 11, 0.3);
+    }
+    
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border-left: 4px solid #3b82f6;
+      transition: transform 0.3s ease;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-4px);
+    }
+    
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+    
+    .stat-available .stat-icon {
+      background: linear-gradient(135deg, #3b82f6, #1e40af);
+      color: white;
+    }
+    
+    .stat-completed .stat-icon {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+    }
+    
+    .stat-score .stat-icon {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+    }
+    
+    .stat-content {
+      flex: 1;
+    }
+    
+    .stat-number {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 0.25rem;
+    }
+    
+    .stat-label {
+      color: #6b7280;
+      font-size: 0.9rem;
+    }
+    
+    /* Search and Filter */
+    .search-section {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+      border: 1px solid #e2e8f0;
+    }
+    
+    .search-container {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    
+    .search-input {
+      flex: 1;
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      border: 1px solid #d1d5db;
+      transition: all 0.2s ease;
+      font-size: 1rem;
+    }
+    
+    .search-input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .search-btn {
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 0.75rem 1.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .search-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(30, 58, 138, 0.3);
+    }
+    
+    /* Test Taking Section */
+    .test-section {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+      animation: slideIn 0.5s ease-out;
+    }
+    
+    .back-btn {
+      transition: all 0.2s ease;
+      border-radius: 10px;
+      padding: 0.5rem 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      color: #374151;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    
+    .back-btn:hover {
+      background: #f1f5f9;
+    }
+    
+    .test-action-btn {
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      transition: all 0.3s ease;
+      border-radius: 12px;
+      padding: 0.75rem 1.5rem;
+      font-weight: 600;
+      box-shadow: 0 4px 6px -1px rgba(30, 58, 138, 0.3);
+      color: white;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .test-action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(30, 58, 138, 0.4);
+    }
+    
+    .test-action-btn.submit {
+      background: linear-gradient(135deg, #10b981, #059669);
+    }
+    
+    .test-action-btn.retake {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+    
+    .info-box {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 1.5rem;
+      border-left: 4px solid #3b82f6;
+    }
+    
+    /* Question Styles */
+    .question-container {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      margin-bottom: 1.5rem;
+      border: 1px solid #e2e8f0;
+    }
+    
+    .option-button {
+      transition: all 0.3s ease;
+      width: 100%;
+      text-align: left;
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.75rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      background: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .option-button:hover {
+      border-color: #3b82f6;
+      background: #f8fafc;
+    }
+    
+    .option-button.selected {
+      background: linear-gradient(135deg, #3b82f6, #1e40af);
+      color: white;
+      border-color: #3b82f6;
+    }
+    
+    .option-letter {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #e5e7eb;
+      color: #374151;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    
+    .option-button.selected .option-letter {
+      background: white;
+      color: #3b82f6;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background-color: #e5e7eb;
+      border-radius: 5px;
+      overflow: hidden;
+      margin: 1.5rem 0;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+      transition: width 0.3s ease;
+    }
+    
+    .question-number {
+      display: inline-flex;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      color: white;
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      font-weight: 600;
+    }
+    
+    .result-correct {
+      background-color: #d1fae5;
+      border-left: 4px solid #10b981;
+    }
+    
+    .result-incorrect {
+      background-color: #fee2e2;
+      border-left: 4px solid #ef4444;
+    }
+    
+    .timer {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    @keyframes slideIn {
+      from { 
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to { 
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.6s ease-in;
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+    
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+      }
+      
+      .main-content {
+        margin-left: 0;
+      }
+      
+      .test-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .search-container {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar">
+    <div class="brand">
+      <i class="fa-solid fa-briefcase"></i>
+      Internship Portal
+    </div>
+    <nav>
+      <ul>
+        <li><a href="/dashboard"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+        <li><a href="/profile"><i class="fa-solid fa-user"></i> Profile</a></li>
+        <li class="active"><a href="/assessment"><i class="fa-solid fa-clipboard-list"></i> Assessment Test</a></li>
+        <li><a href="/applications"><i class="fa-solid fa-folder-open"></i> Application Management</a></li>
+        <li><a href="/private_internships"><i class="fa-solid fa-user-lock"></i> Private Internships</a></li>
+        <li><a href="/government_internships"><i class="fa-solid fa-building-columns"></i> Government Internships</a></li>
+        <li><a href="/feedback"><i class="fa-solid fa-star"></i> Feedback</a></li>
+        <li><a href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="max-w-7xl mx-auto">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-4xl font-bold mb-2 flex items-center">
+          <i class="fa-solid fa-clipboard-list text-blue-600 mr-3"></i>
+          Assessment Tests
+        </h1>
+        <p class="text-gray-600 text-lg">Take assessments to showcase your skills to employers</p>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card stat-available">
+          <div class="stat-icon">
+            <i class="fa-solid fa-file-circle-question"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number" id="availableTests">5</div>
+            <div class="stat-label">Available Tests</div>
+          </div>
+        </div>
+        
+        <div class="stat-card stat-completed">
+          <div class="stat-icon">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number" id="completedTests">2</div>
+            <div class="stat-label">Completed Tests</div>
+          </div>
+        </div>
+        
+        <div class="stat-card stat-score">
+          <div class="stat-icon">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number" id="averageScore">78%</div>
+            <div class="stat-label">Average Score</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search Section -->
+      <div class="search-section">
+        <div class="search-container">
+          <input 
+            type="text" 
+            id="testSearch" 
+            placeholder="Search tests by name, category, or difficulty..." 
+            class="search-input"
+          >
+          <button class="search-btn" id="searchBtn">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            Search
+          </button>
+        </div>
+      </div>
+
+      <!-- Test List -->
+      <div id="testList" class="test-grid fade-in">
+        <!-- Tests will be dynamically added here -->
+      </div>
+
+      <!-- Test Taking Section -->
+      <div id="testSection" class="hidden test-section p-8">
+        <button onclick="backToTestList()" class="back-btn mb-6">
+          <i class="fa-solid fa-arrow-left"></i> Back to Tests
+        </button>
+        
+        <div class="flex justify-between items-center mb-6">
+          <h2 id="testTitle" class="text-3xl font-bold text-gray-900"></h2>
+          <div class="timer">
+            <i class="fa-solid fa-clock"></i>
+            <span id="timer">00:00</span>
+          </div>
+        </div>
+        
+        <div class="progress-bar">
+          <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+        </div>
+        
+        <div id="questionContainer" class="space-y-6">
+          <!-- Questions will be dynamically added here -->
+        </div>
+        
+        <div class="flex justify-between mt-8">
+          <button id="prevBtn" class="test-action-btn">
+            <i class="fa-solid fa-arrow-left"></i> Previous
+          </button>
+          <button id="nextBtn" class="test-action-btn">
+            Next <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+        
+        <div class="flex justify-end mt-6">
+          <button id="submitBtn" class="test-action-btn submit hidden">
+            <i class="fa-solid fa-paper-plane"></i> Submit Test
+          </button>
+        </div>
+      </div>
+
+      <!-- Test Results Section -->
+      <div id="resultSection" class="hidden test-section p-8">
+        <button onclick="backToTestList()" class="back-btn mb-6">
+          <i class="fa-solid fa-arrow-left"></i> Back to Tests
+        </button>
+        
+        <div class="text-center mb-8">
+          <i class="fa-solid fa-trophy text-6xl text-yellow-500 mb-4"></i>
+          <h2 class="text-3xl font-bold text-gray-900 mb-2">Test Completed!</h2>
+          <p class="text-xl text-gray-600">Your results are ready</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div class="bg-blue-50 p-6 rounded-2xl text-center border border-blue-200">
+            <div class="text-3xl font-bold text-blue-600 mb-2" id="finalScore">0</div>
+            <div class="text-gray-600">Your Score</div>
+          </div>
+          <div class="bg-green-50 p-6 rounded-2xl text-center border border-green-200">
+            <div class="text-3xl font-bold text-green-600 mb-2" id="correctAnswers">0</div>
+            <div class="text-gray-600">Correct Answers</div>
+          </div>
+          <div class="bg-purple-50 p-6 rounded-2xl text-center border border-purple-200">
+            <div class="text-3xl font-bold text-purple-600 mb-2" id="timeTaken">0:00</div>
+            <div class="text-gray-600">Time Taken</div>
+          </div>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-4 text-gray-800">Detailed Results</h3>
+        <div id="resultDetails" class="space-y-4">
+          <!-- Result details will be added here -->
+        </div>
+
+        <div class="flex justify-center gap-4 mt-8">
+          <button onclick="backToTestList()" class="test-action-btn">
+            <i class="fa-solid fa-rotate-left"></i> Take Another Test
+          </button>
+          <button onclick="viewCertificate()" class="test-action-btn retake">
+            <i class="fa-solid fa-download"></i> Download Certificate
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Sample tests data
+    const tests = [
+      {
+        id: 1,
+        title: "Programming Fundamentals",
+        description: "Test your basic programming knowledge",
+        duration: 15,
+        questions: 10,
+        difficulty: "Beginner",
+        category: "Programming",
+        completed: true,
+        score: 85,
+        questions: [
+          {
+            id: 1,
+            text: "Which language is primarily used for web development?",
+            options: [
+              { id: 'a', text: "Python" },
+              { id: 'b', text: "JavaScript" },
+              { id: 'c', text: "C++" },
+              { id: 'd', text: "Java" }
+            ],
+            correct: 'b'
+          },
+          {
+            id: 2,
+            text: "Which data structure uses FIFO principle?",
+            options: [
+              { id: 'a', text: "Stack" },
+              { id: 'b', text: "Queue" },
+              { id: 'c', text: "Graph" },
+              { id: 'd', text: "Tree" }
+            ],
+            correct: 'b'
+          },
+          {
+            id: 3,
+            text: "What is 2 + 2 * 3?",
+            options: [
+              { id: 'a', text: "8" },
+              { id: 'b', text: "12" },
+              { id: 'c', text: "10" },
+              { id: 'd', text: "6" }
+            ],
+            correct: 'a'
+          },
+          {
+            id: 4,
+            text: "Which of the following is not a programming paradigm?",
+            options: [
+              { id: 'a', text: "Object-Oriented" },
+              { id: 'b', text: "Functional" },
+              { id: 'c', text: "Procedural" },
+              { id: 'd', text: "Circular" }
+            ],
+            correct: 'd'
+          },
+          {
+            id: 5,
+            text: "What does HTML stand for?",
+            options: [
+              { id: 'a', text: "Hyper Text Markup Language" },
+              { id: 'b', text: "High Tech Modern Language" },
+              { id: 'c', text: "Hyper Transfer Markup Language" },
+              { id: 'd', text: "Home Tool Markup Language" }
+            ],
+            correct: 'a'
+          }
+        ]
+      },
+      {
+        id: 2,
+        title: "Web Development",
+        description: "Frontend and backend web technologies",
+        duration: 20,
+        questions: 12,
+        difficulty: "Intermediate",
+        category: "Web Development",
+        completed: true,
+        score: 72,
+        questions: [
+          {
+            id: 1,
+            text: "What does CSS stand for?",
+            options: [
+              { id: 'a', text: "Computer Style Sheets" },
+              { id: 'b', text: "Creative Style System" },
+              { id: 'c', text: "Cascading Style Sheets" },
+              { id: 'd', text: "Colorful Style Sheets" }
+            ],
+            correct: 'c'
+          },
+          {
+            id: 2,
+            text: "Which HTML tag is used for the largest heading?",
+            options: [
+              { id: 'a', text: "<h6>" },
+              { id: 'b', text: "<heading>" },
+              { id: 'c', text: "<h1>" },
+              { id: 'd', text: "<head>" }
+            ],
+            correct: 'c'
+          }
+        ]
+      },
+      {
+        id: 3,
+        title: "Data Structures & Algorithms",
+        description: "Advanced programming concepts",
+        duration: 30,
+        questions: 15,
+        difficulty: "Advanced",
+        category: "Computer Science",
+        completed: false,
+        score: null,
+        questions: [
+          {
+            id: 1,
+            text: "What is the time complexity of binary search?",
+            options: [
+              { id: 'a', text: "O(1)" },
+              { id: 'b', text: "O(n)" },
+              { id: 'c', text: "O(log n)" },
+              { id: 'd', text: "O(n log n)" }
+            ],
+            correct: 'c'
+          }
+        ]
+      },
+      {
+        id: 4,
+        title: "Database Management",
+        description: "SQL and database concepts",
+        duration: 25,
+        questions: 12,
+        difficulty: "Intermediate",
+        category: "Database",
+        completed: false,
+        score: null,
+        questions: [
+          {
+            id: 1,
+            text: "Which SQL command is used to retrieve data?",
+            options: [
+              { id: 'a', text: "GET" },
+              { id: 'b', text: "SELECT" },
+              { id: 'c', text: "RETRIEVE" },
+              { id: 'd', text: "FIND" }
+            ],
+            correct: 'b'
+          }
+        ]
+      },
+      {
+        id: 5,
+        title: "Software Engineering",
+        description: "Software development methodologies",
+        duration: 20,
+        questions: 10,
+        difficulty: "Intermediate",
+        category: "Engineering",
+        completed: false,
+        score: null,
+        questions: [
+          {
+            id: 1,
+            text: "Which is not an Agile methodology?",
+            options: [
+              { id: 'a', text: "Scrum" },
+              { id: 'b', text: "Waterfall" },
+              { id: 'c', text: "Kanban" },
+              { id: 'd', text: "XP" }
+            ],
+            correct: 'b'
+          }
+        ]
+      }
+    ];
+
+    // Map difficulty to CSS class
+    const difficultyClassMap = {
+      'Beginner': 'difficulty-beginner',
+      'Intermediate': 'difficulty-intermediate',
+      'Advanced': 'difficulty-advanced'
+    };
+
+    // Global variables
+    let currentTest = null;
+    let currentQuestionIndex = 0;
+    let userAnswers = {};
+    let timerInterval = null;
+    let timeLeft = 0;
+    let startTime = null;
+
+    // DOM elements
+    const testList = document.getElementById('testList');
+    const testSection = document.getElementById('testSection');
+    const resultSection = document.getElementById('resultSection');
+    const searchInput = document.getElementById('testSearch');
+    const searchBtn = document.getElementById('searchBtn');
+
+    // Display available tests
+    function displayTests(testArray) {
+      if (testArray.length === 0) {
+        testList.innerHTML = `
+          <div class="col-span-full text-center py-12">
+            <i class="fa-solid fa-search text-5xl text-gray-300 mb-4"></i>
+            <h3 class="text-xl font-semibold text-gray-700 mb-2">No tests found</h3>
+            <p class="text-gray-500">Try adjusting your search criteria</p>
+          </div>
+        `;
+        return;
+      }
+      
+      testList.innerHTML = testArray.map(test => `
+        <div class="test-card" data-id="${test.id}">
+          <div class="test-card-content">
+            <div class="flex justify-between items-start mb-3">
+              <h3 class="font-bold text-xl text-gray-900">${test.title}</h3>
+              <span class="difficulty-badge ${difficultyClassMap[test.difficulty]}">${test.difficulty}</span>
+            </div>
+            
+            <div class="space-y-2 mb-4">
+              <p class="text-gray-700">${test.description}</p>
+              <div class="flex justify-between text-sm text-gray-600 mt-3">
+                <span class="flex items-center gap-1">
+                  <i class="fa-solid fa-clock text-blue-500"></i>
+                  ${test.duration} min
+                </span>
+                <span class="flex items-center gap-1">
+                  <i class="fa-solid fa-list-ol text-green-500"></i>
+                  ${test.questions} questions
+                </span>
+                <span class="flex items-center gap-1">
+                  <i class="fa-solid fa-tag text-purple-500"></i>
+                  ${test.category}
+                </span>
+              </div>
+            </div>
+            
+            ${test.completed ? `
+              <div class="mt-3 p-3 bg-blue-50 rounded-xl border border-blue-200">
+                <div class="flex justify-between items-center">
+                  <span class="text-sm font-medium text-blue-700">Previous Score</span>
+                  <span class="text-lg font-bold text-blue-600">${test.score}%</span>
+                </div>
+              </div>
+            ` : ''}
+            
+            <div class="test-buttons">
+              <button class="btn ${test.completed ? 'retake' : 'start'}" onclick="startTest(${test.id})">
+                <i class="fa-solid ${test.completed ? 'fa-redo' : 'fa-play'}"></i>
+                ${test.completed ? 'Retake Test' : 'Start Test'}
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Start a test
+    function startTest(testId) {
+      currentTest = tests.find(t => t.id === testId);
+      if (!currentTest) return;
+
+      timeLeft = currentTest.duration * 60;
+      userAnswers = {};
+      currentQuestionIndex = 0;
+      startTime = new Date();
+
+      // Hide test list and show test section
+      testList.style.display = 'none';
+      testSection.classList.remove('hidden');
+      resultSection.classList.add('hidden');
+
+      // Set test title
+      document.getElementById('testTitle').textContent = currentTest.title;
+
+      // Start timer
+      updateTimer();
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          submitTest();
+        }
+        updateTimer();
+      }, 1000);
+
+      // Render first question
+      renderQuestion();
+      updateNavigationButtons();
+    }
+
+    // Update timer display
+    function updateTimer() {
+      const timerEl = document.getElementById('timer');
+      const mins = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+      const secs = (timeLeft % 60).toString().padStart(2, '0');
+      timerEl.textContent = `${mins}:${secs}`;
+    }
+
+    // Render current question
+    function renderQuestion() {
+      const question = currentTest.questions[currentQuestionIndex];
+      const container = document.getElementById('questionContainer');
+      
+      // Update progress bar
+      const progress = ((currentQuestionIndex + 1) / currentTest.questions.length) * 100;
+      document.getElementById('progressFill').style.width = `${progress}%`;
+
+      container.innerHTML = `
+        <div class="question-container">
+          <div class="mb-4">
+            <span class="question-number">${currentQuestionIndex + 1}</span>
+            <span class="text-lg font-semibold">Question ${currentQuestionIndex + 1} of ${currentTest.questions.length}</span>
+          </div>
+          <p class="font-semibold text-xl mb-6">${question.text}</p>
+          <div class="space-y-3">
+            ${question.options.map(opt => `
+              <button class="option-button ${userAnswers[question.id] === opt.id ? 'selected' : ''}"
+                data-opt="${opt.id}" onclick="selectOption('${question.id}', '${opt.id}')">
+                <div class="option-letter">${opt.id.toUpperCase()}</div>
+                <span>${opt.text}</span>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // Select an option
+    function selectOption(questionId, optionId) {
+      userAnswers[questionId] = optionId;
+      renderQuestion();
+    }
+
+    // Update navigation buttons
+    function updateNavigationButtons() {
+      document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
+      
+      if (currentQuestionIndex === currentTest.questions.length - 1) {
+        document.getElementById('nextBtn').classList.add('hidden');
+        document.getElementById('submitBtn').classList.remove('hidden');
+      } else {
+        document.getElementById('nextBtn').classList.remove('hidden');
+        document.getElementById('submitBtn').classList.add('hidden');
+      }
+    }
+
+    // Navigation event listeners
+    document.getElementById('prevBtn').addEventListener('click', () => {
+      if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        renderQuestion();
+        updateNavigationButtons();
+      }
+    });
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      if (currentQuestionIndex < currentTest.questions.length - 1) {
+        currentQuestionIndex++;
+        renderQuestion();
+        updateNavigationButtons();
+      }
+    });
+
+    document.getElementById('submitBtn').addEventListener('click', () => {
+      clearInterval(timerInterval);
+      submitTest();
+    });
+
+    // Submit test and show results
+    function submitTest() {
+      const endTime = new Date();
+      const timeTaken = Math.round((endTime - startTime) / 1000); // in seconds
+
+      testSection.classList.add('hidden');
+      resultSection.classList.remove('hidden');
+
+      const totalQuestions = currentTest.questions.length;
+      let score = 0;
+
+      // Calculate score
+      currentTest.questions.forEach(q => {
+        if (userAnswers[q.id] === q.correct) {
+          score++;
+        }
+      });
+
+      const percentage = Math.round((score / totalQuestions) * 100);
+
+      // Update result display
+      document.getElementById('finalScore').textContent = `${percentage}%`;
+      document.getElementById('correctAnswers').textContent = `${score}/${totalQuestions}`;
+      
+      // Format time taken
+      const minutes = Math.floor(timeTaken / 60);
+      const seconds = timeTaken % 60;
+      document.getElementById('timeTaken').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+      // Show detailed results
+      const resultDetails = document.getElementById('resultDetails');
+      resultDetails.innerHTML = '';
+
+      currentTest.questions.forEach((q, index) => {
+        const userAnswer = userAnswers[q.id] || 'Not answered';
+        const isCorrect = userAnswer === q.correct;
+        
+        const resultDiv = document.createElement('div');
+        resultDiv.className = `p-4 rounded-lg ${isCorrect ? 'result-correct' : 'result-incorrect'}`;
+        resultDiv.innerHTML = `
+          <div class="font-semibold mb-2">Question ${index + 1}: ${q.text}</div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+            <div><strong>Your answer:</strong> ${userAnswer.toUpperCase()} - ${q.options.find(o => o.id === userAnswer)?.text || 'Not answered'}</div>
+            <div><strong>Correct answer:</strong> ${q.correct.toUpperCase()} - ${q.options.find(o => o.id === q.correct).text}</div>
+          </div>
+        `;
+        resultDetails.appendChild(resultDiv);
+      });
+
+      // Update test completion status
+      currentTest.completed = true;
+      currentTest.score = percentage;
+      updateTestStats();
+    }
+
+    // Back to test list
+    function backToTestList() {
+      testSection.classList.add('hidden');
+      resultSection.classList.add('hidden');
+      testList.style.display = 'grid';
+      updateTestStats();
+      
+      // Clear timer
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+
+    // View certificate (placeholder function)
+    function viewCertificate() {
+      alert('Certificate download feature would be implemented here!');
+    }
+
+    // Update test statistics
+    function updateTestStats() {
+      const availableTests = tests.filter(test => !test.completed).length;
+      const completedTests = tests.filter(test => test.completed).length;
+      const averageScore = tests.filter(test => test.completed).length > 0 
+        ? Math.round(tests.filter(test => test.completed).reduce((sum, test) => sum + test.score, 0) / completedTests)
+        : 0;
+
+      document.getElementById('availableTests').textContent = availableTests;
+      document.getElementById('completedTests').textContent = completedTests;
+      document.getElementById('averageScore').textContent = `${averageScore}%`;
+    }
+
+    // Search functionality
+    searchBtn.addEventListener('click', performSearch);
+    searchInput.addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') performSearch();
+    });
+
+    function performSearch() {
+      const query = searchInput.value.toLowerCase().trim();
+      if (!query) {
+        displayTests(tests);
+        return;
+      }
+      
+      const filtered = tests.filter(test =>
+        test.title.toLowerCase().includes(query) ||
+        test.description.toLowerCase().includes(query) ||
+        test.category.toLowerCase().includes(query) ||
+        test.difficulty.toLowerCase().includes(query)
+      );
+      displayTests(filtered);
+    }
+
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', () => {
+      displayTests(tests);
+      updateTestStats();
+    });
+  </script>
+</body>
+</html>

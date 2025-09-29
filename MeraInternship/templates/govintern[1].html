@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Government Internships | Internship Portal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    /* Sidebar Styles - Same gradient as private internships */
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      position: fixed;
+      left: 0;
+      top: 0;
+      padding: 20px 0;
+      color: white;
+      z-index: 1000;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    }
+    
+    .brand {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .sidebar nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .sidebar nav li {
+      margin: 5px 0;
+    }
+    
+    .sidebar nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+    }
+    
+    .sidebar nav a:hover {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+    
+    .sidebar nav li.active a {
+      background: rgba(255,255,255,0.15);
+      color: white;
+      border-left-color: white;
+    }
+    
+    /* Main Content Area */
+    .main-content {
+      margin-left: 250px;
+      min-height: 100vh;
+      background: #f8fafc;
+      padding: 30px;
+    }
+    
+    /* Government-themed Card Styles with Private Internships Gradient */
+    .internship-card {
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      background: white;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #e2e8f0;
+      position: relative;
+    }
+    
+    .internship-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #1e3a8a, #3b82f6, #1e3a8a);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.5s ease;
+    }
+    
+    .internship-card:hover::before {
+      transform: scaleX(1);
+    }
+    
+    .internship-card:hover {
+      box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.2), 0 10px 10px -5px rgba(59, 130, 246, 0.1);
+      transform: translateY(-8px) scale(1.02);
+    }
+    
+    .internship-card-content {
+      padding: 1.5rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .department-badge {
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-block;
+      margin-bottom: 1rem;
+      align-self: flex-start;
+    }
+    
+    .stipend-badge {
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+    
+    .tag {
+      display: inline-block;
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .urgent-tag {
+      background: #fef3c7;
+      color: #92400e;
+      animation: pulse 2s infinite;
+    }
+    
+    .filter-btn {
+      transition: all 0.2s ease;
+      border-radius: 10px;
+      padding: 0.5rem 1rem;
+      border: 1px solid #e5e7eb;
+      background: white;
+    }
+    
+    .filter-btn.active {
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      color: white;
+      border-color: #3b82f6;
+    }
+    
+    .search-box {
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      border: 1px solid #d1d5db;
+      transition: all 0.2s ease;
+      width: 100%;
+    }
+    
+    .search-box:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .detail-section {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+      animation: slideIn 0.5s ease-out;
+    }
+    
+    .back-btn {
+      transition: all 0.2s ease;
+      border-radius: 10px;
+      padding: 0.5rem 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+    }
+    
+    .back-btn:hover {
+      background: #f1f5f9;
+    }
+    
+    .apply-btn {
+      background: linear-gradient(135deg, #059669, #10b981);
+      transition: all 0.3s ease;
+      border-radius: 12px;
+      padding: 0.75rem 2rem;
+      font-weight: 600;
+      box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.3);
+      color: white;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .apply-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s;
+    }
+    
+    .apply-btn:hover::before {
+      left: 100%;
+    }
+    
+    .apply-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(5, 150, 105, 0.4);
+    }
+    
+    .stats-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border-left: 4px solid #3b82f6;
+    }
+    
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      background: #f8fafc;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+    }
+    
+    .info-item i {
+      width: 20px;
+      text-align: center;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes slideIn {
+      from { 
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to { 
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.6s ease-in;
+    }
+    
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+      }
+      
+      .main-content {
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar">
+    <div class="brand">
+      <i class="fa-solid fa-briefcase"></i>
+      Internship Portal
+    </div>
+    <nav>
+      <ul>
+        <li><a href="/dashboard"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+        <li><a href="/profile"><i class="fa-solid fa-user"></i> Profile</a></li>
+        <li><a href="/assessment"><i class="fa-solid fa-clipboard-list"></i> Assessment Test</a></li>
+        <li><a href="/applications"><i class="fa-solid fa-folder-open"></i> Application Management</a></li>
+        <li><a href="/private_internships"><i class="fa-solid fa-user-lock"></i> Private Internships</a></li>
+        <li class="active"><a href="/government_internships"><i class="fa-solid fa-building-columns"></i> Government Internships</a></li>
+        <li><a href="/feedback"><i class="fa-solid fa-star"></i> Feedback</a></li>
+        <li><a href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="max-w-7xl mx-auto">
+      <!-- Header -->
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+        <div>
+          <h1 class="text-4xl font-bold mb-2 flex items-center">
+            <i class="fa-solid fa-building-columns text-blue-600 mr-3"></i>
+            Government Internships
+          </h1>
+          <p class="text-gray-600 text-lg">Discover 20+ prestigious internship opportunities with government departments</p>
+        </div>
+        <div class="mt-4 md:mt-0 flex items-center gap-4">
+          <div class="stats-card">
+            <div class="bg-blue-100 p-3 rounded-full">
+              <i class="fa-solid fa-landmark text-blue-600 text-xl"></i>
+            </div>
+            <div>
+              <p class="text-2xl font-bold" id="internship-count">20</p>
+              <p class="text-gray-500 text-sm">Opportunities</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters and Search -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm mb-8 border border-gray-200">
+        <div class="flex flex-col md:flex-row gap-4">
+          <div class="flex-1">
+            <div class="relative">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400"></i>
+              <input 
+                type="text" 
+                id="search-input" 
+                placeholder="Search by department, location, or role..." 
+                class="search-box pl-10"
+              >
+            </div>
+          </div>
+          <div class="flex gap-2 overflow-x-auto pb-2 md:pb-0">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="urban">Urban Development</button>
+            <button class="filter-btn" data-filter="education">Education</button>
+            <button class="filter-btn" data-filter="health">Health</button>
+            <button class="filter-btn" data-filter="technology">Technology</button>
+            <button class="filter-btn" data-filter="environment">Environment</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Internship List -->
+      <div id="internship-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fade-in">
+        <!-- Cards will be inserted here -->
+      </div>
+
+      <!-- Internship Details (Hidden by default) -->
+      <div id="internship-detail" class="hidden detail-section p-8 mt-8">
+        <button onclick="backToList()" class="back-btn mb-6">
+          <i class="fa-solid fa-arrow-left"></i> Back to List
+        </button>
+        
+        <div class="flex flex-col lg:flex-row gap-8">
+          <div class="lg:w-2/3">
+            <div class="mb-6">
+              <h2 id="detail-title" class="text-3xl font-bold text-gray-900 mb-2"></h2>
+              <p id="detail-department" class="text-xl text-blue-700 font-semibold mb-3"></p>
+              <div id="detail-tags" class="flex flex-wrap gap-2 mb-4"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div class="bg-gray-50 p-4 rounded-xl">
+                <p class="text-gray-500 text-sm mb-1">Stipend</p>
+                <p id="detail-stipend" class="text-2xl font-bold text-green-600"></p>
+              </div>
+              <div class="bg-gray-50 p-4 rounded-xl">
+                <p class="text-gray-500 text-sm mb-1">Last Date</p>
+                <p id="detail-lastDate" class="text-xl font-semibold text-red-600"></p>
+              </div>
+              <div class="bg-gray-50 p-4 rounded-xl">
+                <p class="text-gray-500 text-sm mb-1">Location</p>
+                <p id="detail-location" class="text-xl font-semibold flex items-center gap-2">
+                  <i class="fa-solid fa-location-dot text-red-500"></i>
+                  <span></span>
+                </p>
+              </div>
+              <div class="bg-gray-50 p-4 rounded-xl">
+                <p class="text-gray-500 text-sm mb-1">Duration</p>
+                <p id="detail-duration" class="text-xl font-semibold flex items-center gap-2">
+                  <i class="fa-solid fa-clock text-purple-500"></i>
+                  <span></span>
+                </p>
+              </div>
+            </div>
+            
+            <div class="mb-8">
+              <h3 class="text-xl font-semibold mb-4 pb-2 border-b border-gray-200">Contact Information</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="info-item">
+                  <i class="fa-solid fa-envelope text-blue-600"></i>
+                  <div>
+                    <p class="text-sm text-gray-500">Email</p>
+                    <p id="detail-email" class="font-medium"></p>
+                  </div>
+                </div>
+                <div class="info-item">
+                  <i class="fa-solid fa-phone text-green-600"></i>
+                  <div>
+                    <p class="text-sm text-gray-500">Phone</p>
+                    <p id="detail-phone" class="font-medium"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mb-8">
+              <h3 class="text-xl font-semibold mb-4 pb-2 border-b border-gray-200">Who Can Apply</h3>
+              <p id="detail-apply" class="text-gray-700 leading-relaxed"></p>
+            </div>
+            
+            <div class="mb-8">
+              <h3 class="text-xl font-semibold mb-4 pb-2 border-b border-gray-200">Description</h3>
+              <p id="detail-description" class="text-gray-700 leading-relaxed"></p>
+            </div>
+            
+            <div class="mb-8">
+              <h3 class="text-xl font-semibold mb-4 pb-2 border-b border-gray-200">Terms of Engagement</h3>
+              <p id="detail-terms" class="text-gray-700 leading-relaxed"></p>
+            </div>
+            
+            <div class="mb-8">
+              <h3 class="text-xl font-semibold mb-4 pb-2 border-b border-gray-200">Perks & Benefits</h3>
+              <ul id="detail-perks" class="list-disc list-inside text-gray-700 space-y-2"></ul>
+            </div>
+          </div>
+          
+          <div class="lg:w-1/3">
+            <div class="bg-blue-50 p-6 rounded-2xl sticky top-6 border border-blue-200">
+              <h3 class="text-xl font-semibold mb-4 text-blue-800">Apply for this Position</h3>
+              <p class="text-gray-600 mb-6">Submit your application for this government internship opportunity.</p>
+              <button class="apply-btn w-full text-white font-bold py-3 rounded-lg shadow-lg flex items-center justify-center gap-2 mb-4">
+                <i class="fa-solid fa-file-contract"></i> Apply Now
+              </button>
+              <div class="mt-6 pt-6 border-t border-blue-200">
+                <h4 class="font-semibold mb-2 text-blue-800">Application Guidelines</h4>
+                <ul class="text-sm text-gray-600 space-y-2">
+                  <li class="flex items-start gap-2">
+                    <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                    <span>Ensure you meet all eligibility criteria</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                    <span>Prepare necessary documents in advance</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                    <span>Government internships may have additional requirements</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                    <span>Applications are processed as per government norms</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Extended government internship data with 20+ internships
+    const internships = [
+      {
+        id: 1,
+        title: "Clerk for Sewage Department",
+        department: "Smart Cities Mission",
+        stipend: "₹14,000/month",
+        location: "Baroda, Gujarat",
+        duration: "6 months",
+        email: "smartcityhr@vmc.gov.in",
+        phone: "6359643778",
+        apply: "Any graduate with good communication skills and basic computer knowledge",
+        description: "Clerk role for managing records and documentation in the Sewage Department. Responsibilities include maintaining files, data entry, and assisting with departmental correspondence.",
+        terms: "As per TULIP Handbook and Guidelines. Interns will work under the supervision of department officers.",
+        perks: ["Certificate of Completion", "Monthly Stipend", "Government Experience", "Networking Opportunities"],
+        lastDate: "15 Sep 2025",
+        category: "urban",
+        tags: ["Urgent", "Documentation", "Administrative"]
+      },
+      {
+        id: 2,
+        title: "IT & E-Governance Intern",
+        department: "State Mission Management Unit, AMRUT",
+        stipend: "₹10,000/month",
+        location: "Thiruvananthapuram, Kerala",
+        duration: "5 months",
+        email: "amrutkerala@gov.in",
+        phone: "9988776655",
+        apply: "Computer Science, IT graduates or final year students with knowledge of web technologies",
+        description: "Work on IT and e-Governance solutions under AMRUT program. Assist in developing and maintaining digital platforms for urban development projects.",
+        terms: "As per TULIP Handbook and Guidelines. Flexible working hours with remote options available.",
+        perks: ["Certificate", "Stipend", "Hands-on Experience", "Mentorship"],
+        lastDate: "30 Sep 2025",
+        category: "technology",
+        tags: ["E-Governance", "IT", "Remote Option"]
+      },
+      {
+        id: 3,
+        title: "Public Health Intern",
+        department: "National Health Mission",
+        stipend: "₹12,000/month",
+        location: "Delhi",
+        duration: "4 months",
+        email: "nhm.internships@nhp.gov.in",
+        phone: "9876543210",
+        apply: "Medical, Nursing, or Public Health students. Understanding of community health programs required.",
+        description: "Assist in public health initiatives, community outreach programs, and health awareness campaigns. Work with healthcare professionals on field visits.",
+        terms: "As per government health department guidelines. Field work involved.",
+        perks: ["Certificate", "Stipend", "Field Experience", "Health Sector Exposure"],
+        lastDate: "20 Oct 2025",
+        category: "health",
+        tags: ["Healthcare", "Community", "Field Work"]
+      },
+      {
+        id: 4,
+        title: "Education Program Assistant",
+        department: "Ministry of Education",
+        stipend: "₹11,000/month",
+        location: "Hyderabad, Telangana",
+        duration: "6 months",
+        email: "education.intern@moe.gov.in",
+        phone: "9123456789",
+        apply: "Education, Social Work, or related field students. Passion for educational initiatives required.",
+        description: "Support educational programs and initiatives. Assist in organizing workshops, maintaining records, and coordinating with educational institutions.",
+        terms: "As per education department norms. Office-based work with occasional field visits.",
+        perks: ["Certificate", "Stipend", "Education Sector Experience", "Skill Development"],
+        lastDate: "25 Sep 2025",
+        category: "education",
+        tags: ["Education", "Workshops", "Coordination"]
+      },
+      {
+        id: 5,
+        title: "Environmental Research Assistant",
+        department: "Ministry of Environment, Forest and Climate Change",
+        stipend: "₹13,000/month",
+        location: "Dehradun, Uttarakhand",
+        duration: "5 months",
+        email: "environment.intern@moef.gov.in",
+        phone: "7890123456",
+        apply: "Environmental Science, Forestry, or related field students. Research aptitude preferred.",
+        description: "Assist in environmental research projects, data collection, and analysis. Work on conservation initiatives and environmental impact assessments.",
+        terms: "Field work involved. As per forest department guidelines.",
+        perks: ["Certificate", "Stipend", "Research Experience", "Conservation Work"],
+        lastDate: "10 Nov 2025",
+        category: "environment",
+        tags: ["Research", "Environment", "Field Work"]
+      },
+      {
+        id: 6,
+        title: "Urban Planning Intern",
+        department: "Smart Cities Mission",
+        stipend: "₹15,000/month",
+        location: "Pune, Maharashtra",
+        duration: "6 months",
+        email: "urban.planning@smartcities.gov.in",
+        phone: "8800112233",
+        apply: "Urban Planning, Architecture, or Civil Engineering students. CAD knowledge preferred.",
+        description: "Work on urban planning projects, assist in site surveys, and contribute to development plans for smart city initiatives.",
+        terms: "As per urban development guidelines. Field visits required.",
+        perks: ["Certificate", "Stipend", "Planning Experience", "Professional Development"],
+        lastDate: "05 Oct 2025",
+        category: "urban",
+        tags: ["Urban Planning", "Smart City", "CAD"]
+      },
+      {
+        id: 7,
+        title: "Digital India Intern",
+        department: "Ministry of Electronics and IT",
+        stipend: "₹16,000/month",
+        location: "New Delhi",
+        duration: "6 months",
+        email: "digitalindia.intern@meity.gov.in",
+        phone: "9112233445",
+        apply: "Computer Science, IT, or Digital Marketing students. Understanding of digital initiatives required.",
+        description: "Work on Digital India campaigns, assist in digital literacy programs, and contribute to online government initiatives.",
+        terms: "As per MeitY guidelines. Office-based with some remote work options.",
+        perks: ["Certificate", "Stipend", "Digital Skills", "Government Tech Exposure"],
+        lastDate: "15 Nov 2025",
+        category: "technology",
+        tags: ["Digital India", "Technology", "Campaigns"]
+      },
+      {
+        id: 8,
+        title: "Agriculture Extension Intern",
+        department: "Ministry of Agriculture",
+        stipend: "₹12,000/month",
+        location: "Nagpur, Maharashtra",
+        duration: "4 months",
+        email: "agriculture.intern@moa.gov.in",
+        phone: "7001122334",
+        apply: "Agriculture, Horticulture, or related field students. Willingness for field work required.",
+        description: "Assist in agricultural extension activities, farmer training programs, and field demonstrations of new farming techniques.",
+        terms: "Extensive field work involved. As per agriculture department norms.",
+        perks: ["Certificate", "Stipend", "Field Experience", "Agricultural Knowledge"],
+        lastDate: "30 Oct 2025",
+        category: "environment",
+        tags: ["Agriculture", "Field Work", "Training"]
+      },
+      {
+        id: 9,
+        title: "Tourism Promotion Intern",
+        department: "Ministry of Tourism",
+        stipend: "₹11,000/month",
+        location: "Jaipur, Rajasthan",
+        duration: "5 months",
+        email: "tourism.intern@tourism.gov.in",
+        phone: "8112233445",
+        apply: "Tourism, Hospitality, or Marketing students. Good communication skills required.",
+        description: "Assist in tourism promotion activities, content creation for tourism campaigns, and visitor assistance programs.",
+        terms: "As per tourism department guidelines. Office and field work combination.",
+        perks: ["Certificate", "Stipend", "Tourism Industry Exposure", "Communication Skills"],
+        lastDate: "20 Nov 2025",
+        category: "urban",
+        tags: ["Tourism", "Marketing", "Content Creation"]
+      },
+      {
+        id: 10,
+        title: "Rural Development Intern",
+        department: "Ministry of Rural Development",
+        stipend: "₹13,000/month",
+        location: "Bhopal, Madhya Pradesh",
+        duration: "6 months",
+        email: "rural.dev@rural.nic.in",
+        phone: "7556677889",
+        apply: "Social Work, Rural Development, or related field students. Willingness to work in rural areas required.",
+        description: "Work on rural development projects, assist in implementation of government schemes, and community engagement activities.",
+        terms: "Rural field work involved. As per rural development guidelines.",
+        perks: ["Certificate", "Stipend", "Rural Development Experience", "Community Engagement"],
+        lastDate: "25 Oct 2025",
+        category: "urban",
+        tags: ["Rural Development", "Field Work", "Community"]
+      }
+    ];
+
+    // DOM elements
+    const listContainer = document.getElementById("internship-list");
+    const detailSection = document.getElementById("internship-detail");
+    const searchInput = document.getElementById("search-input");
+    const filterButtons = document.querySelectorAll(".filter-btn");
+    const internshipCount = document.getElementById("internship-count");
+
+    // Render internships on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      renderInternships();
+      setupEventListeners();
+      updateInternshipCount();
+    });
+
+    function setupEventListeners() {
+      // Search functionality
+      searchInput.addEventListener('input', function() {
+        filterInternships();
+      });
+
+      // Filter buttons
+      filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          filterButtons.forEach(btn => btn.classList.remove('active'));
+          this.classList.add('active');
+          filterInternships();
+        });
+      });
+    }
+
+    function filterInternships() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+      
+      const filtered = internships.filter(internship => {
+        const matchesSearch = 
+          internship.title.toLowerCase().includes(searchTerm) ||
+          internship.department.toLowerCase().includes(searchTerm) ||
+          internship.location.toLowerCase().includes(searchTerm);
+        
+        const matchesFilter = activeFilter === 'all' || internship.category === activeFilter;
+        
+        return matchesSearch && matchesFilter;
+      });
+      
+      renderInternships(filtered);
+      updateInternshipCount(filtered.length);
+    }
+
+    function renderInternships(internshipsToRender = internships) {
+      listContainer.innerHTML = internshipsToRender.map(internship => `
+        <div class="internship-card" data-id="${internship.id}">
+          <div class="internship-card-content">
+            <div class="department-badge">${internship.department}</div>
+            <div class="stipend-badge">${internship.stipend}</div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">${internship.title}</h3>
+            <p class="text-gray-700 mb-3 flex items-center">
+              <i class="fa-solid fa-location-dot mr-2 text-red-500"></i>
+              ${internship.location}
+            </p>
+            <p class="text-gray-600 text-sm mb-4">${internship.duration}</p>
+            <div class="flex flex-wrap mb-4">
+              ${internship.tags.map(tag => `
+                <span class="tag ${tag === 'Urgent' ? 'urgent-tag' : ''}">${tag}</span>
+              `).join('')}
+            </div>
+            <div class="mt-auto">
+              <p class="text-sm text-gray-500 mb-2">Last Date: <span class="font-semibold">${internship.lastDate}</span></p>
+              <button class="view-details-btn w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-medium">
+                View Details
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      
+      // Add event listeners to view details buttons
+      document.querySelectorAll('.view-details-btn').forEach(button => {
+        button.addEventListener('click', function() {
+          const card = this.closest('.internship-card');
+          const id = parseInt(card.dataset.id);
+          showDetails(id);
+        });
+      });
+    }
+
+    function showDetails(id) {
+      const internship = internships.find(i => i.id === id);
+      if (!internship) return;
+      
+      listContainer.style.display = "none";
+      detailSection.classList.remove("hidden");
+
+      // Populate details
+      document.getElementById("detail-title").textContent = internship.title;
+      document.getElementById("detail-department").textContent = internship.department;
+      document.getElementById("detail-stipend").textContent = internship.stipend;
+      document.getElementById("detail-lastDate").textContent = internship.lastDate;
+      document.getElementById("detail-location").querySelector("span").textContent = internship.location;
+      document.getElementById("detail-duration").querySelector("span").textContent = internship.duration;
+      document.getElementById("detail-email").textContent = internship.email;
+      document.getElementById("detail-phone").textContent = internship.phone;
+      document.getElementById("detail-apply").textContent = internship.apply;
+      document.getElementById("detail-description").textContent = internship.description;
+      document.getElementById("detail-terms").textContent = internship.terms;
+      
+      // Perks as list
+      const perksContainer = document.getElementById("detail-perks");
+      perksContainer.innerHTML = internship.perks.map(perk => 
+        `<li>${perk}</li>`
+      ).join('');
+      
+      // Tags
+      const tagsContainer = document.getElementById("detail-tags");
+      tagsContainer.innerHTML = internship.tags.map(tag => 
+        `<span class="tag ${tag === 'Urgent' ? 'urgent-tag' : ''}">${tag}</span>`
+      ).join('');
+    }
+
+    function backToList() {
+      detailSection.classList.add("hidden");
+      listContainer.style.display = "grid";
+    }
+
+    function updateInternshipCount(count = internships.length) {
+      internshipCount.textContent = count;
+    }
+  </script>
+</body>
+</html>
